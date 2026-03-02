@@ -1,4 +1,4 @@
-package com.epw.controller;
+package com.epw.activities.controller;
 
 import com.epw.activities.dto.ActivityResponse;
 import com.epw.activities.dto.CreateActivityRequest;
