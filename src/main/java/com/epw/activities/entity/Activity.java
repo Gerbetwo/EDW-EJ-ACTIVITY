@@ -26,6 +26,9 @@ public class Activity {
     private Instant createdAt;
     @Column(nullable = false)
     private Instant updatedAt;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     @PrePersist
     void onCreate() {
@@ -110,5 +113,13 @@ public class Activity {
 
     public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }
