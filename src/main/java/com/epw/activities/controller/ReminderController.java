@@ -24,7 +24,7 @@ public class ReminderController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Reminder create(@PathVariable Long activityId,
+    public ReminderResponse create(@PathVariable Long activityId,
             @Valid @RequestBody CreateReminderRequest request) {
         Activity activity = activityRepository.findById(activityId)
                 .orElseThrow(() -> new ResourceNotFoundException("Activity " + activityId + " not found"));
@@ -39,7 +39,7 @@ public class ReminderController {
         reminderResponse.setId(reminder.getId());
         reminderResponse.setRemindAt(reminder.getRemindAt());
         reminderResponse.setNote(reminder.getNote());
-        reminderResponse.setActivityId(reminder.getActivity());
+        reminderResponse.setActivityId(reminder.getId());
 
         return reminderResponse;
     }
