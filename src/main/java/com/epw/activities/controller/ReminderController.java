@@ -3,6 +3,7 @@ package com.epw.activities.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import com.epw.activities.dto.CreateReminderRequest;
+import com.epw.activities.dto.ReminderResponse;
 import com.epw.activities.entity.Activity;
 import com.epw.activities.entity.Reminder;
 import com.epw.activities.exception.ResourceNotFoundException;
@@ -31,6 +32,15 @@ public class ReminderController {
         reminder.setRemindAt(request.getRemindAt());
         reminder.setNote(request.getNote());
         reminder.setActivity(activity);
-        return reminderRepository.save(reminder);
+        reminderRepository.save(reminder);
+
+        ReminderResponse reminderResponse = new ReminderResponse();
+
+        reminderResponse.setId(reminder.getId());
+        reminderResponse.setRemindAt(reminder.getRemindAt());
+        reminderResponse.setNote(reminder.getNote());
+        reminderResponse.setActivityId(reminder.getActivity());
+
+        return reminderResponse;
     }
 }
