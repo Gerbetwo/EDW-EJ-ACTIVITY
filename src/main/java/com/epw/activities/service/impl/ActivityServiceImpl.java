@@ -10,6 +10,8 @@ import com.epw.activities.repository.ActivityRepository;
 import com.epw.activities.service.ActivityService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.epw.activities.entity.Category;
+import com.epw.activities.repository.CategoryRepository;
 import java.time.Instant;
 import java.util.List;
 
@@ -17,9 +19,11 @@ import java.util.List;
 @Transactional
 public class ActivityServiceImpl implements ActivityService {
     private final ActivityRepository repository;
+    private final CategoryRepository categoryRepository;
 
-    public ActivityServiceImpl(ActivityRepository repository) {
+    public ActivityServiceImpl(ActivityRepository repository, CategoryRepository categoryRepository) {
         this.repository = repository;
+        this.categoryRepository = categoryRepository;
     }
 
     @Override
@@ -31,6 +35,13 @@ public class ActivityServiceImpl implements ActivityService {
         a.setPriority(request.getPriority());
         a.setDueDate(request.getDueDate());
         Activity saved = repository.save(a);
+        if (request.getCategoryId() != null) {
+            Category category = categoryRepository.findById(request.getCategoryId())
+                    .orElseThrow(
+                            () -> new ResourceNotFoundException("Category " + request.getCategoryId() + " not found"));
+            a.setCategory(category);
+        }
+
         return toResponse(saved);
     }
 
@@ -111,6 +122,10 @@ public class ActivityServiceImpl implements ActivityService {
         r.setDescription(a.getDescription());
         r.setStatus(a.getStatus());
         r.setPriority(a.getPriority());
+        if (a.getCategory() != null) {
+            r.setCategoryId(a.getCategory().getId());
+            r.setCategoryName(a.getCategory().getName());
+        }
         r.setDueDate(a.getDueDate());
         r.setCompletedAt(a.getCompletedAt());
         r.setCreatedAt(a.getCreatedAt());
