@@ -5,43 +5,59 @@ import java.time.LocalDate;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "activity")
 public class Activity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false, length = 120)
     private String title;
+
     @Column(length = 2000)
     private String description;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private ActivityStatus status = ActivityStatus.BACKLOG;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private ActivityPriority priority = ActivityPriority.MEDIUM;
+
     private LocalDate dueDate;
-    private Instant completedAt;
-    @Column(nullable = false, updatable = false)
-    private Instant createdAt;
-    @Column(nullable = false)
-    private Instant updatedAt;
+
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @ManyToMany
-    @JoinTable(name = "activity_tag", joinColumns = @JoinColumn(name = "activity_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
-    
     @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reminder> reminders = new ArrayList<>();
 
     @OneToOne(mappedBy = "activity", cascade = CascadeType.ALL, orphanRemoval = true)
     private ActivityDetail detail;
+
+    @ManyToMany
+    @JoinTable(
+        name = "activity_tag",
+        joinColumns = @JoinColumn(name = "activity_id"),
+        inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private Set<Tag> tags = new HashSet<>();
+
+    private Instant completedAt;
+
+    @Column(nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @Column(nullable = false)
+    private Instant updatedAt;
 
     @PrePersist
     void onCreate() {
@@ -155,7 +171,6 @@ public class Activity {
     public Set<Tag> getTags() {
         return tags;
     }
-
     public void setTags(Set<Tag> tags) {
         this.tags = tags;
     }
