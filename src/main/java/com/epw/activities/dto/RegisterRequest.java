@@ -7,7 +7,7 @@ public class RegisterRequest {
     @NotBlank
     private String username;
     @NotBlank
-    @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")
+    @Size(min = 6, message = "Password must have atleast 6 characters")
     private String password;
 
     public String getUsername() {
